@@ -11,5 +11,6 @@ class Location(GraphicalEntity):
             position = Coordinate.RandomCoordinate()
         self.position = position
 
-    def step(self, dt, batch):
-        self.draw_sprite(batch, self.image, self.position)
+    def step(self, dt, batch, draw=True):
+        if draw:
+            self.draw_sprite(batch, self.image, self.position)

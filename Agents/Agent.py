@@ -24,8 +24,4 @@ class Agent(object):
         logger.info("Created agent %s with id %d" % (self.name, self.id))
 
     def step(self, dt, batch):
-        if self.alive is False:
-            return False
-        
-
         return True

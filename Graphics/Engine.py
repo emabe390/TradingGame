@@ -1,7 +1,7 @@
 import logging
 import pyglet
 from pyglet.window import mouse, key
-from Helpers.Coordinate import Coordinate
+from Helpers.Coordinate import Coordinate, Square
 import os
 
 resouce_path = [os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "resources"))]
@@ -24,31 +24,45 @@ scroll_scale = 1000
 scroll_delta = 1/scroll_scale
 sprite_scale = 20
 
+window_square = None
+
 def get_sprite_scale():
     return max(min(sprite_scale/current_scroll(), 3.0), 0.3)
 
 def current_scroll():
     return (scroll_default + scroll * scroll_scale)
 
-def transform(world_coordinate):
+def transform(world_coordinate=None, x=None, y=None): #Transforms a world coordinate into a screen coordinate
+    if world_coordinate:
+        assert x is None and y is None
+        x = world_coordinate.x
+        y = world_coordinate.y
     w_scale = width / current_scroll()
     h_scale = height / current_scroll()
     w_half = width/2
     h_half = height/2
-    return ((world_coordinate.x - middle_x + w_half) * w_scale  + w_half,
-            (world_coordinate.y - middle_y + h_half) * h_scale + h_half)
+    return ((x - middle_x + w_half) * w_scale + middle_x,
+            (y - middle_y + h_half) * h_scale + middle_y)
 
-def reverse_transform(x, y, coordinate=True):
+def reverse_transform(x, y, coordinate=True): #Transforms a screen coordinate into a world coordinate
     w_scale = width / current_scroll()
     h_scale = height / current_scroll()
     w_half = width/2
     h_half = height/2
-    wcx = (x-w_half)/w_scale - w_half + middle_x
-    wcy = (y-h_half)/h_scale - h_half + middle_y
+    wcx = (x-middle_x)/w_scale - w_half + middle_x
+    wcy = (y-middle_y)/h_scale - h_half + middle_y
     if coordinate:
         return Coordinate(wcx, wcy)
     else:
         return wcx, wcy
+
+def viewpoint_changed():
+    global window_square
+    lx, ly = reverse_transform(0,0, coordinate=False)
+    ux, uy = reverse_transform(width, height, coordinate=False)
+    print("VPS:", lx, ly, ux, uy)
+    window_square = Square(lx, ly, ux, uy)
+viewpoint_changed() #Initializing window_square
 
 @window.event
 def on_resize(w, h):
@@ -84,7 +98,9 @@ def on_key_press(symbol, modifiers):
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     if button == mouse.LEFT:
-        gameObject.world.set_target(reverse_transform(x, y))
+        coord = reverse_transform(x, y)
+        print(x, y,coord)
+        gameObject.world.set_target(coord)
 
 @window.event
 def on_mouse_release(x, y, button, modifiers):
@@ -104,8 +120,10 @@ def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         #middle_y -= dy*delta
         middle_x += delta_x
         middle_y += delta_y
+        viewpoint_changed()
 
 @window.event
 def on_mouse_scroll(x, y, scroll_x, scroll_y):
     global scroll
     scroll = min(max(scroll + scroll_y * scroll_delta, 0), scroll_default - 1)
+    viewpoint_changed()

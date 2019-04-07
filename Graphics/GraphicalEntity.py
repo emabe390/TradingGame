@@ -4,6 +4,10 @@ import pyglet
 class GraphicalEntity():
     def __init__(self):
         self.oldsprite = None
+
+    def removed_from_segment(self, world_segment):
+        pass
+
     def draw_text(self, batch, name, world_coordinate):
         x, y = Engine.transform(world_coordinate)
         #print(name, x, y)
