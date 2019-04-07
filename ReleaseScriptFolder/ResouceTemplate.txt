@@ -1,0 +1,9 @@
+class {fixed_name}():
+    def __init__(self, units=0):
+        self.name = "{name}"
+        self.units = units
+        self.volume = {size}
+        self.baseValue = {baseValue}
+
+    def information(self):
+        return {"name": self.name, "units": self.units, "volume": self.volume, "baseValue": self.baseValue}
