@@ -60,7 +60,6 @@ def viewpoint_changed():
     global window_square
     lx, ly = reverse_transform(0,0, coordinate=False)
     ux, uy = reverse_transform(width, height, coordinate=False)
-    print("VPS:", lx, ly, ux, uy)
     window_square = Square(lx, ly, ux, uy)
 viewpoint_changed() #Initializing window_square
 

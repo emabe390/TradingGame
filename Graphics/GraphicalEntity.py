@@ -28,29 +28,14 @@ class GraphicalEntity():
             rotation = rotation - 90
         x, y = Engine.transform(world_coordinate)
         scale = Engine.get_sprite_scale()
-        if self.is_inside(x, y, scale, image):
-            if self.oldsprite is not None and scale == self.oldsprite.scale and rotation == self.oldsprite.rotation:
-                self.oldsprite.set_position(x, y)
-                self.oldsprite.batch = batch
-            else:   
-                self.oldsprite = pyglet.sprite.Sprite(image,
-                                x=x,
-                                y=y,
-                                batch=batch)
-                self.oldsprite.scale = scale
-                if rotation is not None:
-                    self.oldsprite.rotation = rotation
-
-    def is_inside(self, x, y, scale, image):
-        xc = [x-image.width * scale, x+image.width * scale]
-        yc = [y-image.height  * scale, y+image.height * scale]
-        low_x = 0
-        high_x = Engine.width
-        low_y = 0
-        high_y = Engine.height
-        for xx in xc:
-            if xx >= low_x and xx <= high_x:
-                for yy in yc:
-                    if yy >= low_y and yy <= high_y:
-                        return True
-        return False
+        if self.oldsprite is not None and scale == self.oldsprite.scale and rotation == self.oldsprite.rotation:
+            self.oldsprite.set_position(x, y)
+            self.oldsprite.batch = batch
+        else:   
+            self.oldsprite = pyglet.sprite.Sprite(image,
+                            x=x,
+                            y=y,
+                            batch=batch)
+            self.oldsprite.scale = scale
+            if rotation is not None:
+                self.oldsprite.rotation = rotation
