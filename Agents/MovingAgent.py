@@ -35,11 +35,13 @@ class MovingAgent(Agent, GraphicalEntity):
     def _move(self, target, dt):
         if self.ship is not None:
             dt_left = dt
+            moveCoord = None
             while dt_left > 0:
-                moveCoord, perc_dt_left = self.position.deltaCoord(self.target, self.ship.velocity * dt * 120)
-                dt_left = dt_left * perc_dt_left
+                moveCoord, perc_dt_left = self.position.deltaCoord(self.target, self.ship.velocity * dt)
                 if not moveCoord.isZero():
                     self.position = self.position + moveCoord
-                    return math.atan2(moveCoord.y, -moveCoord.x)*180/math.pi
                 else:
                     self.target = self.world.get_random_location().position
+                dt_left = dt_left * perc_dt_left
+            if moveCoord is not None:
+                return math.atan2(moveCoord.y, -moveCoord.x)*180/math.pi

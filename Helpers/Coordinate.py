@@ -45,23 +45,33 @@ class Coordinate(object):
     def __mul__(self, other):
         return Coordinate(self.x * other, self.y * other)
 
+    def unit(self):
+        a = self.absolute_distance()
+        if a == 0.0:
+            return Coordinate(0,0)
+        d = 1/a
+        return self * d
+
+    def absolute_distance(self):
+        return pow(pow(self.x, 2) + pow(self.y, 2), 0.5)
+
     def distance(self, other):
         return pow(pow(self.x-other.x, 2) + pow(self.y-other.y, 2), 0.5)
 
     def deltaCoord(self, other, maxLength=None):
         result = other - self
         if maxLength is not None:
-            d = self.distance(other)
+            d = result.absolute_distance()
             if d > maxLength:
                 perc = 0
-                result = result * (maxLength / d)
+                result = result.unit() * maxLength
             else:
                 perc = 1.0-d/maxLength
             return result, perc
         return result
 
     def isZero(self):
-        return self.x == 0.0 and self.y == 0.0
+        return self.absolute_distance() == 0
 
     def __str__(self):
         return "(%0.2f, %0.2f)" % (self.x, self.y)

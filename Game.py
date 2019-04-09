@@ -88,12 +88,12 @@ class World():
 
         self.locations = {}
         self.location_ids = []
-        n = 10
+        n = 2
         for x in range(n):
             for i in range(n):
                 if random.randint(0,100) > 20:
-                    continue
-                location = Location(name="", image=resources["station"], position=Coordinate(x*10,i*10))
+                    pass# continue
+                location = Location(name="", image=resources["station"], position=Coordinate(x*100,i*100))
                 segment = self.get_segment(location.position)
                 self.locations[location.id] = location
                 self.location_ids.append(location.id)
